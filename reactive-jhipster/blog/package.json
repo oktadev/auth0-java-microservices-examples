@@ -38,7 +38,6 @@
     "java:war": "./gradlew bootWar -Pwar -x test -x integrationTest",
     "java:war:dev": "npm run java:war -- -Pdev,webapp",
     "java:war:prod": "npm run java:war -- -Pprod",
-    "prepare": "husky install",
     "prettier:check": "prettier --check \"{,src/**/,.blueprint/**/}*.{md,json,yml,html,java}\"",
     "prettier:format": "prettier --write \"{,src/**/,.blueprint/**/}*.{md,json,yml,html,java}\"",
     "services:up": "docker compose -f src/main/docker/services.yml up --wait"
@@ -50,8 +49,6 @@
   },
   "devDependencies": {
     "generator-jhipster": "7.9.3",
-    "husky": "7.0.4",
-    "lint-staged": "13.1.2",
     "prettier": "2.8.4",
     "prettier-plugin-java": "2.0.0",
     "prettier-plugin-packagejson": "2.4.3"
