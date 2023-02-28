@@ -3,7 +3,7 @@
 :commandkey: &#8984;
 :toc: macro
 
-== Reactive Java Microservices with JHipster Demo Steps
+= Reactive Java Microservices with JHipster
 
 Today, I'd like to show you how to use JHipster 8 to create a reactive Java microservices architecture with Spring Boot, Spring Cloud, Spring Cloud Gateway, and Spring WebFlux.
 
@@ -15,7 +15,7 @@ Today, I'd like to show you how to use JHipster 8 to create a reactive Java micr
 
 toc::[]
 
-=== Build a Reactive Java Microservices Architecture
+== Build a reactive Java microservices architecture
 
 In this demo, I'll show you how to generate a microservice architecture that uses OAuth 2.0, an API gateway, and two microservices (a blog and a store). The gateway will use PostgreSQL with R2DBC, the blog will use Neo4j, and the store will use MongoDB.
 
@@ -46,7 +46,7 @@ jhipster jdl reactive-ms.jdl
 +
 As part of this process, several Docker Compose files are generated for you. These allow you to run databases, the https://www.jhipster.tech/jhipster-registry/[JHipster Registry] (for service discovery), https://www.keycloak.org/[Keycloak] (for identity), all with Docker.
 
-=== Run Your Reactive Java Microservices
+== Run your reactive Java microservices
 
 . Run the following commands to start Keycloak, PostgreSQL, and the JHipster Registry.
 +
@@ -93,7 +93,7 @@ This is because you will access your application with a browser on your machine 
 
 . To prove everything works, you can run `npm run e2e` in the gateway project's directory. This will run a number of end-to-end tests with https://www.cypress.io/[Cypress].
 
-=== Prepare Your Reactive Java Stack for Production
+== Prepare your reactive Java stack for production
 
 Keycloak is a superb open source identity provider. It has excellent support for OAuth 2.0 and OpenID Connect (OIDC) and easily runs in a Docker container. I greatly appreciate Keycloak's ease-of-use. I also ❤️ Spring Security's OAuth and OIDC support.
 
@@ -148,7 +148,7 @@ exports.onExecutePostLogin = async (event, api) => {
 +
 Select **Deploy** and drag the `Add Roles` action to your Login flow.
 
-==== Update the JHipster Registry to Distribute OIDC Configuration
+=== Update the JHipster Registry to distribute OIDC configuration
 
 Spring Cloud Config allows you to distribute Spring's configuration between apps. In this section, you'll configure JHipster's Spring Security settings to use Auth0 across all your services.
 
@@ -197,7 +197,7 @@ export CYPRESS_E2E_PASSWORD=<your-password>
 npm run e2e
 ----
 
-=== Create Docker Images for Your Microservice Apps
+== Create Docker images for your microservice apps
 
 . Stop all your apps with kbd:[Ctrl + C]. Stop all your Docker instances too.
 +
@@ -215,7 +215,7 @@ TIP: Bump up the memory and CPU that Docker uses in Docker > Preferences > Resou
 ./gradlew -Pprod bootJar jibDockerBuild -PjibArchitecture=arm64
 ----
 
-=== Run Your Microservices Stack with Docker Compose
+== Run your microservices stack with Docker Compose
 
 Once your Docker containers are finished building, you'll want to add your Auth0 settings to Spring Cloud Config in JHipster Registry.
 
@@ -249,7 +249,9 @@ TIP: The https://plugins.jetbrains.com/plugin/19697-jhipster-jdl[JHipster JDL Pl
 jhipster jdl reactive-mf.jdl --monorepository --workspaces
 ----
 
-== What About Kotlin Microservices?
+. Read https://auth0.com/blog/micro-frontends-for-java-microservices/[Micro Frontends for Java Microservices] to learn more.
+
+== What About Kotlin microservices?
 
 JHipster supports Kotlin-based microservices thanks to its https://github.com/jhipster/jhipster-kotlin[Kotlin blueprint], supported by https://github.com/sendilkumarn[Sendil Kumar N].
 
@@ -262,8 +264,8 @@ npm install -g generator-jhipster-kotlin
 
 Then, use `khipster jdl reactive-ms` to create the same stack you did above with Kotlin.
 
-== Stay Hip with JHipster!
+== Stay hip with JHipster!
 
-⛑ Find the code on GitHub: https://github.com/oktadev/auth0-java-microservices-examples/tree/main/reactive-jhipster[@oktadev/auth0-java-microservices-examples/reactive-jhipster]
+⛑️ Find the code on GitHub: https://github.com/oktadev/auth0-java-microservices-examples/tree/main/reactive-jhipster[@oktadev/auth0-java-microservices-examples/reactive-jhipster]
 
 
