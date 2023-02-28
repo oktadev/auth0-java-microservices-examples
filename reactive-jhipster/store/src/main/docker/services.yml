@@ -1,0 +1,18 @@
+# This configuration is intended for development purpose, it's **your** responsibility to harden it for production
+name: store
+services:
+  mongodb:
+    extends:
+      file: ./mongodb.yml
+      service: mongodb
+  keycloak:
+    extends:
+      file: ./keycloak.yml
+      service: keycloak
+  jhipster-registry:
+    extends:
+      file: ./jhipster-registry.yml
+      service: jhipster-registry
+    depends_on:
+      keycloak:
+        condition: service_healthy

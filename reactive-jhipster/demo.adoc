@@ -1,0 +1,269 @@
+:experimental:
+// Define unicode for Apple Command key.
+:commandkey: &#8984;
+:toc: macro
+
+== Reactive Java Microservices with JHipster Demo Steps
+
+Today, I'd like to show you how to use JHipster 8 to create a reactive Java microservices architecture with Spring Boot, Spring Cloud, Spring Cloud Gateway, and Spring WebFlux.
+
+**Prerequisites:**
+
+- https://adoptopenjdk.net/[Java 17]+
+- https://nodejs.org/[Node 18]+
+- https://docs.docker.com/get-docker/[Docker]
+
+toc::[]
+
+=== Build a Reactive Java Microservices Architecture
+
+In this demo, I'll show you how to generate a microservice architecture that uses OAuth 2.0, an API gateway, and two microservices (a blog and a store). The gateway will use PostgreSQL with R2DBC, the blog will use Neo4j, and the store will use MongoDB.
+
+. Install JHipster 8 from its `main` branch:
++
+[source,shell]
+----
+git clone https://github.com/jhipster/generator-jhipster.git
+cd generator-jhipster
+npm install
+npm link
+----
+
+. Create a directory called `reactive-stack` and initialize `git`.
++
+[source,shell]
+----
+take reactive-stack # mkdir reactive-stack && cd reactive-stack
+git init # initialize git, so apps aren't created with their own .git
+----
+
+. Import the `reactive-ms` architecture definition from the https://github.com/jhipster/jdl-samples[jdl-samples repository] and generate `gateway`, `blog`, and `store` apps.
++
+[source,shell]
+----
+jhipster jdl reactive-ms.jdl
+----
++
+As part of this process, several Docker Compose files are generated for you. These allow you to run databases, the https://www.jhipster.tech/jhipster-registry/[JHipster Registry] (for service discovery), https://www.keycloak.org/[Keycloak] (for identity), all with Docker.
+
+=== Run Your Reactive Java Microservices
+
+. Run the following commands to start Keycloak, PostgreSQL, and the JHipster Registry.
++
+[source,shell]
+----
+cd gateway
+docker compose -f src/main/docker/keycloak.yml up -d #jhkeycloakup
+docker compose -f src/main/docker/jhipster-registry.yml up -d #jhregistryup
+./gradlew
+----
++
+TIP: JHipster has an https://www.jhipster.tech/oh-my-zsh/[Oh My ZSH! plugin] that I highly recommend. It provides aliases for starting Docker containers and is a real time-saver. I've included these commands as comments above.
+
+. Open a new terminal window, start the blog app's Neo4j database, and then the app itself.
++
+[source,shell]
+----
+cd ../blog
+docker compose -f src/main/docker/neo4j.yml up -d #jhneo4jup
+./gradlew
+----
+
+. Open another terminal window, start the store app's MongoDB database, and the microservice.
++
+[source,shell]
+----
+cd ../store
+docker compose -f src/main/docker/mongodb.yml up -d #jhmongoup
+./gradlew
+----
++
+[CAUTION]
+====
+To make Keycloak work, you need to add the following line to your hosts file (`/etc/hosts` on Mac/Linux, `c:\Windows\System32\Drivers\etc\hosts` on Windows).
+
+----
+127.0.0.1	keycloak
+----
+
+This is because you will access your application with a browser on your machine (which is named localhost, or `127.0.0.1`), but inside Docker, it will run in its own container, which is named `keycloak`.
+====
+
+. Open `http://localhost:8080` in your favorite browser. You should be able to log in with `admin/admin` as credentials.
+
+. To prove everything works, you can run `npm run e2e` in the gateway project's directory. This will run a number of end-to-end tests with https://www.cypress.io/[Cypress].
+
+=== Prepare Your Reactive Java Stack for Production
+
+Keycloak is a superb open source identity provider. It has excellent support for OAuth 2.0 and OpenID Connect (OIDC) and easily runs in a Docker container. I greatly appreciate Keycloak's ease-of-use. I also ❤️ Spring Security's OAuth and OIDC support.
+
+Spring Security makes it so you only need to override three properties to switch from Keycloak to Auth0!
+
+Spring Cloud Gateway makes it easy to relay an access token between a gateway and microservices. It's just five lines of YAML:
+
+[source,yaml]
+----
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
+----
+
+. Install the https://github.com/auth0/auth0-cli[Auth0 CLI] and run `auth0 login`.
+
+. In the gateway project's directory, run the command below. Accept the default redirect URIs.
++
+[source,shell]
+----
+auth0 apps create
+----
++
+Use the following values when prompted:
+
+- Name: `Reactive Stack`
+- Type: `Regular Web Application`
+- Callback URLs: `\http://localhost:8080/login/oauth2/code/oidc`
+- Allowed Logout URLs: `\http://localhost:8080`
+
+. In the https://manage.auth0.com/#/roles[roles] section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`.
+
+. Create a new user account in the https://manage.auth0.com/#/users[users] section. Click the *Role* tab to assign the roles you just created to the new account.
++
+IMPORTANT: Make sure your new user's email is verified before attempting to log in!
+
+. Next, head to **Actions** > **Flows** and select **Login**. Create a new action named `Add Roles` and use the default trigger and runtime. Change the `onExecutePostLogin` handler to be as follows:
++
+[source,js]
+----
+exports.onExecutePostLogin = async (event, api) => {
+  const namespace = 'https://www.jhipster.tech';
+  if (event.authorization) {
+    api.idToken.setCustomClaim('preferred_username', event.user.email);
+    api.idToken.setCustomClaim(`${namespace}/roles`, event.authorization.roles);
+    api.accessToken.setCustomClaim(`${namespace}/roles`, event.authorization.roles);
+  }
+}
+----
++
+Select **Deploy** and drag the `Add Roles` action to your Login flow.
+
+==== Update the JHipster Registry to Distribute OIDC Configuration
+
+Spring Cloud Config allows you to distribute Spring's configuration between apps. In this section, you'll configure JHipster's Spring Security settings to use Auth0 across all your services.
+
+. Add the following YAML to `gateway/src/main/docker/central-server-config/localhost-config/application.yml`.
++
+[source,yaml]
+----
+jhipster:
+  ...
+  security:
+    oauth2:
+      audience:
+        - https://<your-auth0-domain>/api/v2/
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          oidc:
+            issuer-uri: https://<your-auth0-domain>/
+        registration:
+          oidc:
+            client-id: <client-id>
+            client-secret: <client-secret>
+----
+
+. Save your changes and restart the JHipster Registry:
++
+[source,shell]
+----
+jhregistrydown
+jhregistryup
+----
+
+. Use kbd:[Ctrl + C] to kill all your `./gradlew` processes and start them again.
+
+. Open an incognito window, go to `http://localhost:8080`, and sign in. Rejoice that using Auth0 for authentication works!
+
+. If you're feeling lucky, you can set your Auth0 credentials as environment variables and run end-to-end tests (from the `gateway` directory).
++
+[source,shell]
+----
+export CYPRESS_E2E_USERNAME=<your-username>
+export CYPRESS_E2E_PASSWORD=<your-password>
+npm run e2e
+----
+
+=== Create Docker Images for Your Microservice Apps
+
+. Stop all your apps with kbd:[Ctrl + C]. Stop all your Docker instances too.
++
+[source,shell]
+----
+docker stop $(docker ps -a -q)
+----
++
+TIP: Bump up the memory and CPU that Docker uses in Docker > Preferences > Resources. I have my Docker preferences set to 6 CPUs and 32GB of RAM.
+
+. To run your reactive stack with Docker Compose, you need to create Docker images for each app. In your three different app directories, run the following Gradle command:
++
+[source,shell]
+----
+./gradlew -Pprod bootJar jibDockerBuild -PjibArchitecture=arm64
+----
+
+=== Run Your Microservices Stack with Docker Compose
+
+Once your Docker containers are finished building, you'll want to add your Auth0 settings to Spring Cloud Config in JHipster Registry.
+
+. Update `docker compose/central-server-config/application.yml` to contain your OIDC settings that you want to share with all your microservices.
+
+. In the `docker-compose` directory, run the following command to start all your containers.
++
+[source,shell]
+----
+docker compose up
+----
+
+. Open `http://localhost:8080`, sign in, and access all of your microservices. Pretty slick, eh?! 🤓
+
+== Micro Frontends with JHipster
+
+. Download `reactive-mf.jdl` and compare it to `reactive-ms.jdl` in IntelliJ IDEA. You'll need IDEA's https://www.jetbrains.com/help/idea/working-with-the-ide-features-from-command-line.html[Command-line Launcher] for the `idea` command to work.
++
+[source,shell]
+----
+jhipster download reactive-mf.jdl
+idea diff reactive-ms.jdl reactive-mf.jdl
+----
++
+TIP: The https://plugins.jetbrains.com/plugin/19697-jhipster-jdl[JHipster JDL Plugin] is a handy tool for working with JDL files.
+
+. Generate a microservices architecture with micro frontend support:
++
+[source,shell]
+----
+jhipster jdl reactive-mf.jdl --monorepository --workspaces
+----
+
+== What About Kotlin Microservices?
+
+JHipster supports Kotlin-based microservices thanks to its https://github.com/jhipster/jhipster-kotlin[Kotlin blueprint], supported by https://github.com/sendilkumarn[Sendil Kumar N].
+
+You can install it using npm:
+
+[source,shell]
+----
+npm install -g generator-jhipster-kotlin
+----
+
+Then, use `khipster jdl reactive-ms` to create the same stack you did above with Kotlin.
+
+== Stay Hip with JHipster!
+
+⛑ Find the code on GitHub: https://github.com/oktadev/auth0-java-microservices-examples/tree/main/reactive-jhipster[@oktadev/auth0-java-microservices-examples/reactive-jhipster]
+
+

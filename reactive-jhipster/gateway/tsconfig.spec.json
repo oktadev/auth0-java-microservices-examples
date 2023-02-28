@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "outDir": "build/out-tsc/spec",
+    "types": ["jest", "node"]
+  },
+  "include": ["src/main/webapp/app", "src/test/javascript/spec"]
+}
