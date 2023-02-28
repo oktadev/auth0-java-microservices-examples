@@ -123,8 +123,8 @@ Use the following values when prompted:
 
 - Name: `Reactive Stack`
 - Type: `Regular Web Application`
-- Callback URLs: `\http://localhost:8080/login/oauth2/code/oidc`
-- Allowed Logout URLs: `\http://localhost:8080`
+- Callback URLs: `\http://localhost:8080/login/oauth2/code/oidc,http://localhost:8761/login/oauth2/code/oidc`
+- Allowed Logout URLs: `\http://localhost:8080,http://localhost:8761`
 
 . In the https://manage.auth0.com/#/roles[roles] section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`.
 
