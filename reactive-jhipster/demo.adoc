@@ -126,9 +126,9 @@ Use the following values when prompted:
 - Callback URLs: `\http://localhost:8080/login/oauth2/code/oidc,http://localhost:8761/login/oauth2/code/oidc`
 - Allowed Logout URLs: `\http://localhost:8080,http://localhost:8761`
 
-. In the https://manage.auth0.com/#/roles[roles] section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`.
+. In the [roles](https://manage.auth0.com/#/roles) section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`.
 
-. Create a new user account in the https://manage.auth0.com/#/users[users] section. Click the *Role* tab to assign the roles you just created to the new account.
+. Create a new user account in the [users](https://manage.auth0.com/#/users) section. Click the *Role* tab to assign the roles you just created to the new account.
 +
 IMPORTANT: Make sure your new user's email is verified before attempting to log in!
 
