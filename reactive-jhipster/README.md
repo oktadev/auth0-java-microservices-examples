@@ -1,5 +1,11 @@
 # Reactive Java Microservices with Spring Boot and JHipster 🤓
 
+I presented this example as part of The Golden Path to SpringOne 2023.
+
+- 📺 [Recording on YouTube](https://www.youtube.com/watch?v=ECZvGkzOsbQ)
+- 📚 [Presentation on Speaker Deck](https://speakerdeck.com/mraible/reactive-microservices-with-spring-boot-and-jhipster-the-golden-path-to-springone-2023)
+- ⛑️ [Demo script](demo.adoc)
+
 This example uses JHipster 8 to generate a reactive microservices architecture with Spring Cloud Gateway and Spring WebFlux. See [Reactive Java Microservices with Spring Boot and JHipster](demo.adoc) to see how it was built.
 
 **Prerequisites:** [Java 17](https://sdkman.io/sdks#java), [Node 18](https://nodejs.org/en/), and [Docker](https://docs.docker.com/engine/install/).
@@ -37,9 +43,9 @@ Use the following values when prompted:
 - Callback URLs: `http://localhost:8080/login/oauth2/code/oidc,http://localhost:8761/login/oauth2/code/oidc`
 - Allowed Logout URLs: `http://localhost:8080,http://localhost:8761`
 
-In the https://manage.auth0.com/#/roles[roles] section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`.
+In the [roles](https://manage.auth0.com/#/roles) section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`.
 
-Create a new user account in the https://manage.auth0.com/#/users[users] section. Click the **Role** tab to assign the roles you just created to the new account.
+Create a new user account in the [users](https://manage.auth0.com/#/users) section. Click the **Role** tab to assign the roles you just created to the new account.
 
 _Make sure your new user's email is verified before attempting to log in!_
 
@@ -58,7 +64,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
 Select **Deploy** and drag the `Add Roles` action to your Login flow.
 
-Spring Cloud Config allows you to distribute Spring's configuration between apps. Update `gateway/src/main/docker/central-server-config/localhost-config/application.yml` to use your Okta app settings. You can find the values for each property in the `.okta.env` file.
+Spring Cloud Config allows you to distribute Spring's configuration between apps. Update `gateway/src/main/docker/central-server-config/localhost-config/application.yml` to use your Auth0 app settings. 
 
 ```yaml
 jhipster:
@@ -113,7 +119,7 @@ Now, open a new incognito browser window, go to `http://localhost:8080`, and sig
 
 ## Links
 
-These examples uses the following open source libraries:
+This examples uses the following open source libraries:
 
 * [Spring Boot](https://spring.io/projects/spring-boot)
 * [Spring Cloud](https://spring.io/projects/spring-cloud)
