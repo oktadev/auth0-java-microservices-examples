@@ -1,7 +1,7 @@
 :experimental:
-// Define unicode for Apple Command key.
 :commandkey: &#8984;
 :toc: macro
+:source-highlighter: highlight.js
 
 = Reactive Java Microservices with JHipster
 
@@ -33,15 +33,15 @@ npm link
 +
 [source,shell]
 ----
-take reactive-stack # mkdir reactive-stack && cd reactive-stack
-git init # initialize git, so apps aren't created with their own .git
+take reactive-stack
+git init
 ----
 
 . Import the `reactive-ms` architecture definition from the https://github.com/jhipster/jdl-samples[jdl-samples repository] and generate `gateway`, `blog`, and `store` apps.
 +
 [source,shell]
 ----
-jhipster jdl reactive-ms.jdl
+jhipster jdl reactive-ms.jdl --skip-jhipster-dependencies
 ----
 +
 As part of this process, several Docker Compose files are generated for you. These allow you to run databases, the https://www.jhipster.tech/jhipster-registry/[JHipster Registry] (for service discovery), https://www.keycloak.org/[Keycloak] (for identity), all with Docker.
@@ -112,23 +112,30 @@ spring:
 
 . Install the https://github.com/auth0/auth0-cli[Auth0 CLI] and run `auth0 login`.
 
-. In the gateway project's directory, run the command below. Accept the default redirect URIs.
+. In the gateway project's directory, run the command below.
 +
 [source,shell]
 ----
-auth0 apps create
+auth0 apps create \
+  --name "Reactive Stack" \
+  --description "JHipster Microservices" \
+  --type regular \
+  --callbacks http://localhost:8080/login/oauth2/code/oidc,http://localhost:8761/login/oauth2/code/oidc \
+  --logout-urls http://localhost:8080,http://localhost:8761 \
+  --reveal-secrets
 ----
 +
-Use the following values when prompted:
+This will create a new Auth0 application and configure it to work with your gateway and service registry.
 
-- Name: `Reactive Stack`
-- Type: `Regular Web Application`
-- Callback URLs: `\http://localhost:8080/login/oauth2/code/oidc,http://localhost:8761/login/oauth2/code/oidc`
-- Allowed Logout URLs: `\http://localhost:8080,http://localhost:8761`
+. In the https://manage.auth0.com/#/roles[roles] section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`. Or, use the Auth0 CLI:
++
+[source,shell]
+----
+auth0 roles create --name ROLE_ADMIN --description "JHipster Admin"
+auth0 roles create --name ROLE_USER --description "JHipster User"
+----
 
-. In the [roles](https://manage.auth0.com/#/roles) section or your Auth0 dashboard, create new roles named `ROLE_ADMIN` and `ROLE_USER`.
-
-. Create a new user account in the [users](https://manage.auth0.com/#/users) section. Click the *Role* tab to assign the roles you just created to the new account.
+. Create a new user account in the https://manage.auth0.com/#/users[users] section. Click the *Role* tab to assign the roles you just created to the new account.
 +
 IMPORTANT: Make sure your new user's email is verified before attempting to log in!
 
@@ -157,11 +164,9 @@ Spring Cloud Config allows you to distribute Spring's configuration between apps
 [source,yaml]
 ----
 jhipster:
-  ...
   security:
     oauth2:
-      audience:
-        - https://<your-auth0-domain>/api/v2/
+      audience: https://<your-auth0-domain>/api/v2/
 
 spring:
   security:
@@ -246,7 +251,7 @@ TIP: The https://plugins.jetbrains.com/plugin/19697-jhipster-jdl[JHipster JDL Pl
 +
 [source,shell]
 ----
-jhipster jdl reactive-mf.jdl --monorepository --workspaces
+jhipster jdl reactive-mf.jdl --monorepository --workspaces --skip-jhipster-dependencies
 ----
 
 . Read https://auth0.com/blog/micro-frontends-for-java-microservices/[Micro Frontends for Java Microservices] to learn more.
