@@ -5,12 +5,17 @@ configserver:
 
 jhipster:
   security:
-    authentication:
-      jwt:
-        # secret key which should be base64 encoded and changed in production
-        base64-secret: YzkzNzRiMWVlNTFhZjA4YTY5YjliMmE4NzdlNzRhYWFiZTVjN2VlY2EyMDdhMTk3N2I4M2I3YTNmNjlkM2EyYWJlYTY2YzQyYWY4ZTA5NmQyNDI3NjFkZjNkN2NmMmIzNThhNTg5YzIzYTdmY2NhNzZkOTIxYzliMWQyODgxNzE=
+    oauth2:
+      audience: https://dev-06bzs1cu.us.auth0.com/api/v2/
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://admin:${jhipster.registry.password}@localhost:8761/eureka/
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          oidc:
+            issuer-uri: https://dev-06bzs1cu.us.auth0.com/
+        registration:
+          oidc:
+            client-id: YsdCPZvBvedEJhkaqRm9wwEr79bk0xg5
+            client-secret: dJdNrvOQkOMI_Ug-pfWMoIf8_ZEYTNYw9R0EZ2wgvIVvPC55xoDq214njokW2ywP
