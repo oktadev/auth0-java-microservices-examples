@@ -36,7 +36,9 @@
     <logger name="jakarta.mail" level="WARN"/>
     <logger name="jakarta.management.remote" level="WARN"/>
     <logger name="jakarta.xml.bind" level="WARN"/>
-    <logger name="ch.qos.logback" level="WARN"/>
+    <logger name="ch.qos.logback" level="ERROR"/>
+    <logger name="jdk.event.security" level="ERROR"/>
+    <logger name="io.github.resilience4j" level="ERROR"/>
     <logger name="com.netflix" level="WARN"/>
     <logger name="com.netflix.config.sources.URLConfigurationSource" level="ERROR"/>
     <logger name="com.netflix.discovery" level="INFO"/>
