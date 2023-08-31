@@ -20,9 +20,7 @@ cd auth0-java-microservices-examples/spring-boot-gateway-webflux
 
 The `api-gateway` and `car-service` projects are already pre-configured to be locked down with OAuth 2.0 and Auth0. That means if you try to run them, you won't be able to log in until you create an account, and an application in it.
 
-Install the Auth0 CLI using the instructions on [github.com/auth0/auth0-cli](https://github.com/auth0/auth0-cli) and come back here when you're done. If you don't have an Auth0 account, signup at <https://auth0.com/signup>.
-
-**NOTE**: You can also use your browser and Auth0's dashboard to register an app. See [JHipster's security documentation](https://www.jhipster.tech/security/#auth0) for those instructions.
+[Install the Auth0 CLI](https://github.com/auth0/auth0-cli) and come back here when you're done. If you don't have an Auth0 account, [sign up for free](https://auth0.com/signup).
 
 In the root project's directory, run the command below to register an OIDC app with Auth0.
 
@@ -36,7 +34,7 @@ auth0 apps create \
   --reveal-secrets
 ```
 
-Copy the issuer, client ID, and client secret into an `.okta.env`.
+Copy the issuer, client ID, and client secret into an `.okta.env` file.
 
 ```shell
 export OKTA_OAUTH2_ISSUER=https://<auth0-domain>/
@@ -68,13 +66,13 @@ cd api-gateway
 ./gradlew bootRun
 ```
 
-Make sure all your apps have started and registered by looking at the Eureka dashboard at <http://localhost:8761>.
+Make sure all your apps have started and registered by looking at the Eureka dashboard at `http://localhost:8761`.
 
 Now, open a new incognito browser window, go to `http://localhost:8080`, and sign in. Rejoice that using Auth0 for authentication works!
 
 You can also test out the following features:
 
-- `http://localhost:8080/cool-cars`: Gets a list of cars from the car service with `WebClient`. If you shut down the car service, Spring Cloud Circuit Breaker will return a fallback response.
+- `http://localhost:8080/cool-cars`: Gets a list of cars from the car service with `WebClient`. If you shut down the car service, Spring Cloud Circuit Breaker will return a fallback response. Start the car service, and data will start flowing again.
 - `http://localhost:8080/home`: Proxies the request to `http://car-service/home` with Spring Cloud Gateway and its `TokenRelayFilter`.
 
 You can add refresh token support by adjusting `.okta.env` to have:
@@ -96,17 +94,18 @@ source ../.okta.env
 ./gradlew bootRun
 ```
 
-Then, go to `http://localhost:8080/print-token` to see your access token. You can copy the expired time to [timestamp-converter.com](https://www.timestamp-converter.com/) to see when it expires in your local timezone. Wait 30 seconds and refresh the page. You'll see a request to get a new token and an updated expires time in your terminal.
+Then, go to `http://localhost:8080/print-token` to see your access token. You can copy the expired time to [timestamp-converter.com](https://www.timestamp-converter.com/) to see when it expires in your local timezone. Wait 30 seconds and refresh the page. You'll see a request to get a new token and an updated expires timestamp in your terminal.
 
 ## Links
 
 This examples uses the following open source libraries:
 
+* [Okta Spring Boot Starter](https://github.com/okta/okta-spring-boot)
+* [SDKMAN](https://sdkman.io/)
 * [Spring Boot](https://spring.io/projects/spring-boot)
 * [Spring Cloud](https://spring.io/projects/spring-cloud)
 * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway)
 * [Spring Security](https://spring.io/projects/spring-security)
-* [SDKMAN](https://sdkman.io/)
 
 ## Help
 
