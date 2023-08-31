@@ -29,6 +29,7 @@ public class CarServiceApplication {
 
 	@Bean
 	ApplicationRunner init(CarRepository repository) {
+		repository.deleteAll();
 		return args -> {
 			Stream.of("Ferrari", "Jaguar", "Porsche", "Lamborghini", "Bugatti",
 					"AMC Gremlin", "Triumph Stag", "Ford Pinto", "Yugo GV").forEach(name -> {
