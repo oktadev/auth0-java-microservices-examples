@@ -1,4 +1,4 @@
-package com.example.apigateway;
+package com.example.apigateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 @Configuration
 public class SecurityConfiguration {
 
-    @Value("${okta.oauth2.audience}")
+    @Value("${okta.oauth2.audience:}")
     private String audience;
 
     private final ReactiveClientRegistrationRepository clientRegistrationRepository;

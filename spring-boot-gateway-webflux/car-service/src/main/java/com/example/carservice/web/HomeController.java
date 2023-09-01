@@ -1,4 +1,4 @@
-package com.example.carservice;
+package com.example.carservice.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +16,9 @@ public class HomeController {
     @GetMapping("/home")
     public String howdy(Principal principal) {
         String username = principal.getName();
-        JwtAuthenticationToken token = (JwtAuthenticationToken) principal;
-        log.info("claims: " + token.getTokenAttributes());
+        if (principal instanceof JwtAuthenticationToken token) {
+            log.info("claims: " + token.getTokenAttributes());
+        }
         return "Hello, " + username;
     }
 }
