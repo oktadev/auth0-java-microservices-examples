@@ -34,13 +34,13 @@ auth0 apps create \
   --reveal-secrets
 ```
 
-Copy the issuer, client ID, and client secret into an `.okta.env` file.
+Copy the issuer, client ID, client secret, and audience into a `.env` file in the `api-gateway` directory.
 
-```shell
-export OKTA_OAUTH2_ISSUER=https://<auth0-domain>/
-export OKTA_OAUTH2_CLIENT_ID=<auth0-client-id>
-export OKTA_OAUTH2_CLIENT_SECRET=<auth0-client-secret>
-export OKTA_OAUTH2_AUDIENCE=https://<auth0-domain>/api/v2/
+```dotenv
+OKTA_OAUTH2_ISSUER=https://<auth0-domain>/
+OKTA_OAUTH2_CLIENT_ID=<auth0-client-id>
+OKTA_OAUTH2_CLIENT_SECRET=<auth0-client-secret>
+OKTA_OAUTH2_AUDIENCE=https://<auth0-domain>/api/v2/
 ```
 
 Start the Eureka server in one terminal window for service discovery:
@@ -50,10 +50,16 @@ cd discovery-service
 ./gradlew bootRun
 ```
 
+Copy the issuer and audience into `car-service/.env`:
+
+```dotenv
+OKTA_OAUTH2_ISSUER=https://<auth0-domain>/
+OKTA_OAUTH2_AUDIENCE=https://<auth0-domain>/api/v2/
+```
+
 Open another terminal window and start the car microservice:
 
 ```shell
-source .okta.env
 cd car-service
 ./gradlew bootRun
 ```
@@ -61,7 +67,6 @@ cd car-service
 Then, open a third terminal window and start the API gateway:
 
 ```shell
-source .okta.env
 cd api-gateway
 ./gradlew bootRun
 ```
@@ -75,11 +80,11 @@ You can also test out the following features:
 - `http://localhost:8080/cool-cars`: Gets a list of cars from the car service with `WebClient`. If you shut down the car service, Spring Cloud Circuit Breaker will return a fallback response. Start the car service, and data will start flowing again.
 - `http://localhost:8080/home`: Proxies the request to `http://car-service/home` with Spring Cloud Gateway and its `TokenRelayFilter`.
 
-You can add refresh token support by adjusting `.okta.env` to have:
+You can add refresh token support by adjusting `api-gateway/.env` to have:
 
 ```
-export OKTA_OAUTH2_SCOPES=openid,profile,email,offline_access
-export OKTA_OAUTH2_AUDIENCE=http://fast-expiring-api
+OKTA_OAUTH2_SCOPES=openid,profile,email,offline_access
+OKTA_OAUTH2_AUDIENCE=http://fast-expiring-api
 ```
 
 Then, create an API in Auth0 called `fast-expiring-api` and set the TTL to 30 seconds.
@@ -90,7 +95,6 @@ Restart the API gateway.
 
 ```java
 cd api-gateway
-source ../.okta.env
 ./gradlew bootRun
 ```
 
