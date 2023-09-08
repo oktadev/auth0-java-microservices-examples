@@ -1,6 +1,6 @@
 # Java Microservices with Spring Boot and Spring Cloud
 
-This example is a bare-bones microservices architecture built with Spring Boot, Spring Cloud, Spring Cloud Gateway, and WebClient.
+This example is a bare-bones microservices architecture built with Spring Boot, Spring Cloud Gateway, WebClient, and Resilience4j.
 
 **Prerequisites:** [Java 17](https://sdkman.io/sdks#java) and [Docker](https://docs.docker.com/engine/install/).
 
