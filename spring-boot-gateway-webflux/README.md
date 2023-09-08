@@ -82,7 +82,7 @@ You can also test out the following features:
 
 You can add refresh token support by adjusting `api-gateway/.env` to have:
 
-```
+```dotenv
 OKTA_OAUTH2_SCOPES=openid,profile,email,offline_access
 OKTA_OAUTH2_AUDIENCE=http://fast-expiring-api
 ```
@@ -93,7 +93,7 @@ Then, create an API in Auth0 called `fast-expiring-api` and set the TTL to 30 se
 
 Restart the API gateway. 
 
-```java
+```shell
 cd api-gateway
 ./gradlew bootRun
 ```
