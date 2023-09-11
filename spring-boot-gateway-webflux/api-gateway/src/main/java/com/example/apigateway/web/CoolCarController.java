@@ -27,7 +27,7 @@ class CoolCarController {
     }
 
     @GetMapping("/cool-cars")
-    public Flux<Car> goodCars() {
+    public Flux<Car> coolCars() {
         return circuitBreaker.run(
             webClientBuilder.build()
                 .get().uri("http://car-service/cars")
