@@ -6,11 +6,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,6 @@ record Car(String name) {
 interface CarClient {
 
     @GetMapping("/cars")
-    @CrossOrigin
     CollectionModel<Car> readCars();
 }
 
@@ -45,19 +42,18 @@ class CoolCarController {
     }
 
     @GetMapping("/cool-cars")
-    @CrossOrigin
     public Collection<Car> coolCars() {
         return carClient.readCars()
-            .getContent()
-            .stream()
-            .filter(this::isCool)
-            .collect(Collectors.toList());
+                .getContent()
+                .stream()
+                .filter(this::isCool)
+                .collect(Collectors.toList());
     }
 
     private boolean isCool(Car car) {
         return !car.name().equals("AMC Gremlin") &&
-            !car.name().equals("Triumph Stag") &&
-            !car.name().equals("Ford Pinto") &&
-            !car.name().equals("Yugo GV");
+                !car.name().equals("Triumph Stag") &&
+                !car.name().equals("Ford Pinto") &&
+                !car.name().equals("Yugo GV");
     }
 }
