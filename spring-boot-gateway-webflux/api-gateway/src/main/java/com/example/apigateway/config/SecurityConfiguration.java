@@ -3,47 +3,49 @@ package com.example.apigateway.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizationRequestResolver;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.function.Consumer;
 
 @Configuration
 public class SecurityConfiguration {
 
-    @Value("${okta.oauth2.audience:}")
+    @Value("${okta.oauth2.audience}")
     private String audience;
 
-    private final ReactiveClientRegistrationRepository clientRegistrationRepository;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
-    public SecurityConfiguration(ReactiveClientRegistrationRepository clientRegistrationRepository) {
+    public SecurityConfiguration(ClientRegistrationRepository clientRegistrationRepository) {
         this.clientRegistrationRepository = clientRegistrationRepository;
     }
 
     @Bean
-    public SecurityWebFilterChain filterChain(ServerHttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeExchange(authz -> authz
-                .anyExchange().authenticated()
+            .authorizeHttpRequests(authorize -> authorize
+                .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
-                .authorizationRequestResolver(
-                    authorizationRequestResolver(this.clientRegistrationRepository)
+                .authorizationEndpoint(authorization -> authorization
+                    .authorizationRequestResolver(
+                        authorizationRequestResolver(this.clientRegistrationRepository)
+                    )
                 )
             );
         return http.build();
     }
 
-    private ServerOAuth2AuthorizationRequestResolver authorizationRequestResolver(
-        ReactiveClientRegistrationRepository clientRegistrationRepository) {
+    private OAuth2AuthorizationRequestResolver authorizationRequestResolver(
+        ClientRegistrationRepository clientRegistrationRepository) {
 
-        DefaultServerOAuth2AuthorizationRequestResolver authorizationRequestResolver =
-            new DefaultServerOAuth2AuthorizationRequestResolver(
-                clientRegistrationRepository);
+        DefaultOAuth2AuthorizationRequestResolver authorizationRequestResolver =
+            new DefaultOAuth2AuthorizationRequestResolver(
+                clientRegistrationRepository, "/oauth2/authorization");
         authorizationRequestResolver.setAuthorizationRequestCustomizer(
             authorizationRequestCustomizer());
 

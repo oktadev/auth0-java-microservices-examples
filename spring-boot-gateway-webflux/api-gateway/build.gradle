@@ -21,8 +21,9 @@ ext {
 
 dependencies {
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
-    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
