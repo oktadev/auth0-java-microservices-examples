@@ -50,7 +50,7 @@ class CoolCarController {
 
     @GetMapping("/cool-cars")
     @CrossOrigin
-    public Collection<Car> goodCars() {
+    public Collection<Car> coolCars() {
         return carClient.readCars()
             .getContent()
             .stream()
