@@ -44,10 +44,6 @@ class CoolCarController {
         this.carClient = carClient;
     }
 
-    private Collection<Car> fallback() {
-        return new ArrayList<>();
-    }
-
     @GetMapping("/cool-cars")
     @CrossOrigin
     public Collection<Car> coolCars() {
