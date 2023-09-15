@@ -61,18 +61,18 @@ https start.spring.io/starter.zip bootVersion==3.1.3 \
 
 https start.spring.io/starter.zip bootVersion==3.1.3 \
   artifactId==car-service name==car-service baseDir==car-service \
-  dependencies==actuator,cloud-eureka,data-jpa,data-rest,postgresql,web,validation,devtools,docker-compose,okta | tar -xzvf -
+  dependencies==actuator,cloud-eureka,data-jpa,data-rest,postgresql,web,validation,devtools,docker-compose | tar -xzvf -
 
 https start.spring.io/starter.zip bootVersion==3.1.3 \
   artifactId==api-gateway name==api-gateway baseDir==api-gateway \
-  dependencies==cloud-eureka,cloud-gateway,cloud-resilience4j,okta | tar -xzvf -
+  dependencies==cloud-eureka,cloud-gateway,cloud-resilience4j | tar -xzvf -
 ----
-
-. Run `chmod +x gradlew` in each directory to make the Gradle wrapper executable.
 
 . Open the `spring-boot-microservices` directory in IntelliJ IDEA:
 
     idea .
+
+. Run `chmod +x gradlew` in each directory to make the Gradle wrapper executable.
 
 == Add Service Discovery with Netflix Eureka
 
@@ -109,45 +109,6 @@ public class EurekaServiceApplication { ... }
 server.port=8090
 spring.application.name=car-service
 spring.jpa.hibernate.ddl-auto=update
-----
-
-. Modify `CarServiceApplication` to enable service discovery and to create a default set of cars when the application loads.
-+
-[source,java]
-.car-service/src/main/java/com/example/carservice/CarServiceApplication.java
-----
-package com.example.carservice;
-
-import com.example.carservice.data.Car;
-import com.example.carservice.data.CarRepository;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.Bean;
-
-import java.util.stream.Stream;
-
-@EnableDiscoveryClient
-@SpringBootApplication
-public class CarServiceApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(CarServiceApplication.class, args);
-    }
-
-    @Bean
-    ApplicationRunner init(CarRepository repository) {
-        repository.deleteAll();
-        return args -> {
-            Stream.of("Ferrari", "Jaguar", "Porsche", "Lamborghini", "Bugatti",
-                "AMC Gremlin", "Triumph Stag", "Ford Pinto", "Yugo GV").forEach(name -> {
-                repository.save(new Car(name));
-            });
-            repository.findAll().forEach(System.out::println);
-        };
-    }
-}
 ----
 
 . Create a `Car` entity in the `data` package with `id` and `name` properties.
@@ -197,6 +158,45 @@ public interface CarRepository extends JpaRepository<Car, Long> {
 }
 ----
 
+. Modify `CarServiceApplication` to enable service discovery and to create a default set of cars when the application loads.
++
+[source,java]
+.car-service/src/main/java/com/example/carservice/CarServiceApplication.java
+----
+package com.example.carservice;
+
+import com.example.carservice.data.Car;
+import com.example.carservice.data.CarRepository;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
+
+import java.util.stream.Stream;
+
+@EnableDiscoveryClient
+@SpringBootApplication
+public class CarServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(CarServiceApplication.class, args);
+    }
+
+    @Bean
+    ApplicationRunner init(CarRepository repository) {
+        repository.deleteAll();
+        return args -> {
+            Stream.of("Ferrari", "Jaguar", "Porsche", "Lamborghini", "Bugatti",
+                "AMC Gremlin", "Triumph Stag", "Ford Pinto", "Yugo GV").forEach(name -> {
+                repository.save(new Car(name));
+            });
+            repository.findAll().forEach(System.out::println);
+        };
+    }
+}
+----
+
 . Create a `CarController` class in the `web` package to expose a `/cars` endpoint.
 +
 [source,java]
@@ -226,27 +226,19 @@ class CarController {
 }
 ----
 
-. Add a `docker-compose.yml` file in the root directory to start a PostgreSQL instance.
+. There's a `compose.yml` file in the root directory to start a PostgreSQL instance.
 +
 [source,yaml]
 ----
-version: '3.1'
 services:
-  postgresql:
-    image: postgres:15
+  postgres:
+    image: 'postgres:latest'
     environment:
-      - POSTGRES_USER=oktadev
-      - POSTGRES_PASSWORD=auth0
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER}']
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    # If you want to expose these ports outside your dev PC,
-    # remove the "127.0.0.1:" prefix
+      - 'POSTGRES_DB=mydatabase'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
     ports:
-      - 127.0.0.1:5432:5432
+      - '5432'
 ----
 
 . Start the car service application:
@@ -344,6 +336,13 @@ spring:
           enabled: true
 ----
 
+. Update the `build.gradle` file to use the reactive version of Spring Cloud Circuit Breaker:
++
+[source,groovy]
+----
+implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+----
+
 . Start the API gateway application:
 
    ./gradlew bootRun
@@ -369,7 +368,15 @@ auth0 apps create \
   --reveal-secrets
 ----
 
-. Copy `api-gateway/.env.example` to `.env` and edit it to contain the values from the command above.
+. Modify the `build.gradle` files in both the gateway and car service projects to use the Okta Spring Boot starter and spring-dotenv:
++
+[source,groovy]
+----
+implementation 'com.okta.spring:okta-spring-boot-starter:3.0.5'
+implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+----
+
+. Create an `api-gateway/.env` file and edit it to contain the values from the command above.
 +
 [source,dotenv]
 ----
@@ -378,8 +385,6 @@ OKTA_OAUTH2_CLIENT_ID=
 OKTA_OAUTH2_CLIENT_SECRET=
 OKTA_OAUTH2_AUDIENCE=https://<your-auth0-domain>/api/v2/
 ----
-+
-At startup, these properties will be converted to environment variables using https://github.com/paulschwarz/spring-dotenv[spring-dotenv].
 
 . Update the gateway's `application.properties` to configure the Okta Spring Boot starter with these values:
 +
@@ -392,7 +397,7 @@ okta.oauth2.client-secret=${OKTA_OAUTH2_CLIENT_SECRET}
 okta.oauth2.audience=${OKTA_OAUTH2_AUDIENCE}
 ----
 
-. Copy `car-service/.env.example` to `.env` and update its values.
+. Create `car-service/.env` and update its values.
 +
 [source,dotenv]
 ----
@@ -535,9 +540,9 @@ spring:
 
 . Open `http://localhost:8080` in your favorite browser. You'll be redirected to Auth0 to log in. After authenticating, you'll see your name in lights! ✨
 
-. If you go to `http://localhost:8080/cool-cars`, you won't see any data and there will be an error in your console.
+. If you go to `http://localhost:8080/cool-cars`, you won't see any data and there will be an error in your gateway app's console.
 
-  // todo: what's the error?
+   401 UNAUTHORIZED from GET http://car-service/cars [DefaultWebClient]
 
 . Go to `http://localhost:8080/print-token` and view the access token printed to the console.
 
@@ -620,13 +625,15 @@ http :8090/cars Authorization:"Bearer $TOKEN"
 
 == Spring Boot Microservices and Refresh Tokens
 
-. Change the default scopes in the gateway project to request a refresh token using the `offline_access` scope. Also, change the audience to be one that quickly expires its access tokens.
+. Change the default scopes in the gateway project to request a refresh token using the `offline_access` scope. Also, change the audience to be one that quickly expires its access tokens. Add logging too.
 +
-[source,yaml]
+[source,dotenv]
 ..env
 ----
 OKTA_OAUTH2_AUDIENCE=https://fast-expiring-api
 OKTA_OAUTH2_SCOPES=openid,profile,email,offline_access
+
+logging.level.org.springframework.web.reactive.function.client=DEBUG
 ----
 
 . Add a property to `application.properties` to read the updated scopes.
@@ -647,7 +654,8 @@ auth0 apis create --name fast-expiring --identifier https://fast-expiring-api \
 
 . Restart the API gateway and go to `http://localhost:8080/print-token` to see your access token.
 
-. Copy the expired time to https://www.timestamp-converter.com/[timestamp-converter.com] to see when it expires in your local timezone. Wait 30 seconds and refresh the page. You'll see a request for a new token and an updated `Expires At` timestamp in your terminal.
+. Copy the expired time to https://www.timestamp-converter.com/[timestamp-converter.com] (under ISO 8601) to see when it expires in your local timezone.
+. Wait 30 seconds and refresh the page. You'll see a request for a new token and an updated `Expires At` timestamp in your terminal.
 
 == The Okta Spring Boot starter and Keycloak
 
