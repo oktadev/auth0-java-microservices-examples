@@ -3,7 +3,7 @@
 :toc: macro
 :source-highlighter: highlight.js
 
-= Build Java Microservices with Spring Boot and Spring Cloud
+= Java Microservices with Spring Boot and Spring Cloud
 
 In this demo, you'll see how to build a secure Java microservices architecture with Spring Boot and Spring Cloud. You'll use Spring Data REST to expose a JPA repository as a RESTful API. You'll also use Spring Security and its OAuth support to add authentication and authorization. Finally, you'll use Spring Cloud Gateway to route requests to your microservices.
 
@@ -39,7 +39,7 @@ You can also expand the file names to see the full code.
 
 _Check the description below this video for links to the blog post and this demo script._
 
-== Create Java Microservices with Spring Boot and Spring Cloud
+== Build Java Microservices with Spring Boot & Spring Cloud
 
 . Create a directory to hold all your projects:
 
