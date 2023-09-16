@@ -14,8 +14,8 @@ public class HomeController {
     private final static Logger log = LoggerFactory.getLogger(HomeController.class);
 
     @GetMapping("/home")
-    public String howdy(Principal principal) {
-        String username = principal.getName();
+    public String home(Principal principal) {
+        var username = principal.getName();
         if (principal instanceof JwtAuthenticationToken token) {
             log.info("claims: " + token.getTokenAttributes());
         }

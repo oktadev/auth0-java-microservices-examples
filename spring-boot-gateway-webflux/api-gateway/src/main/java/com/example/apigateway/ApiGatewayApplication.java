@@ -8,8 +8,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.MutablePropertySources;
 
 import java.util.Arrays;
 import java.util.stream.StreamSupport;
@@ -26,12 +24,12 @@ public class ApiGatewayApplication {
 
     // @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        final Environment env = event.getApplicationContext()
+        final var env = event.getApplicationContext()
                 .getEnvironment();
 
         LOGGER.info("Active profiles: {}", Arrays.toString(env.getActiveProfiles()));
 
-        final MutablePropertySources sources = ((AbstractEnvironment) env).getPropertySources();
+        final var sources = ((AbstractEnvironment) env).getPropertySources();
 
         StreamSupport.stream(sources.spliterator(), false)
                 .filter(ps -> ps instanceof EnumerablePropertySource)
