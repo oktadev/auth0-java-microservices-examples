@@ -624,23 +624,23 @@ http :8090/cars Authorization:"Bearer $TOKEN"
 
 == Spring Boot Microservices and Refresh Tokens
 
-. Change the default scopes in the gateway project to request a refresh token using the `offline_access` scope. Also, change the audience to be one that quickly expires its access tokens. Add logging too.
+. Change the default scopes in the gateway project to request a refresh token using the `offline_access` scope. Also, change the audience to be one that quickly expires its access tokens.
 +
 [source,dotenv]
 ..env
 ----
 OKTA_OAUTH2_AUDIENCE=https://fast-expiring-api
 OKTA_OAUTH2_SCOPES=openid,profile,email,offline_access
-
-logging.level.org.springframework.web.reactive.function.client=DEBUG
 ----
 
-. Add a property to `application.properties` to read the updated scopes.
+. Add a property to `application.properties` to read the updated scopes and add logging for WebClient.
 +
 [source,properties]
 .api-gateway/src/main/resources/application.properties
 ----
 okta.oauth2.scopes=${OKTA_OAUTH2_SCOPES}
+
+logging.level.org.springframework.web.reactive.function.client=DEBUG
 ----
 
 . Create a new API in Auth0 and configure it to have a 30-second access token lifetime.
@@ -672,7 +672,7 @@ cd jhipster-sample-app-oauth2
 
 . Start Keycloak with Docker Compose:
 
-   docker-compose -f src/main/docker/keycloak.yml up -d
+   docker compose -f src/main/docker/keycloak.yml up -d
 
 . Configure the gateway to use Keycloak by removing the `okta.oauth2.*` properties and using Spring Security's in `application.properties`:
 +
