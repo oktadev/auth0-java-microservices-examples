@@ -40,7 +40,7 @@ Copy the issuer, client ID, client secret, and audience into a `.env` file in th
 OKTA_OAUTH2_ISSUER=https://<auth0-domain>/
 OKTA_OAUTH2_CLIENT_ID=<auth0-client-id>
 OKTA_OAUTH2_CLIENT_SECRET=<auth0-client-secret>
-OKTA_OAUTH2_AUDIENCE=https://<auth0-domain>/api/v2/
+OKTA_OAUTH2_AUDIENCE=${OKTA_OAUTH2_ISSUER}api/v2/
 ```
 
 Start the Eureka server in one terminal window for service discovery:
@@ -54,7 +54,7 @@ Copy the issuer and audience into `car-service/.env`:
 
 ```dotenv
 OKTA_OAUTH2_ISSUER=https://<auth0-domain>/
-OKTA_OAUTH2_AUDIENCE=https://<auth0-domain>/api/v2/
+OKTA_OAUTH2_AUDIENCE=${OKTA_OAUTH2_ISSUER}api/v2/
 ```
 
 Open another terminal window and start the car microservice:
