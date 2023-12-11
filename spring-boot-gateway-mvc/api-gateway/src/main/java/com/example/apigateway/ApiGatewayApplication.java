@@ -26,7 +26,7 @@ import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequ
 @SpringBootApplication
 public class ApiGatewayApplication {
 
-    @Bean
+    //@Bean
     public RouterFunction<ServerResponse> gatewayRouterFunctionsLoadBalancer() {
         // TODO: token relay not workinig in config
         // @formatter:off
