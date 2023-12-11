@@ -55,24 +55,22 @@ NOTE: If `take` doesn't work, use `mkdir spring-boot-microservices && cd spring-
 +
 [source,shell]
 ----
-https start.spring.io/starter.zip bootVersion==3.1.3 \
-  artifactId==discovery-service name==eureka-service \
+https start.spring.io/starter.tgz bootVersion==3.2.0 \
+  artifactId==discovery-service name==discovery-service \
   dependencies==cloud-eureka-server baseDir==discovery-service | tar -xzvf -
 
-https start.spring.io/starter.zip bootVersion==3.1.3 \
+https start.spring.io/starter.tgz bootVersion==3.2.0 \
   artifactId==car-service name==car-service baseDir==car-service \
   dependencies==actuator,cloud-eureka,data-jpa,data-rest,postgresql,web,validation,devtools,docker-compose | tar -xzvf -
 
-https start.spring.io/starter.zip bootVersion==3.1.3 \
+https start.spring.io/starter.tgz bootVersion==3.2.0 \
   artifactId==api-gateway name==api-gateway baseDir==api-gateway \
-  dependencies==cloud-eureka,cloud-gateway,cloud-resilience4j | tar -xzvf -
+  dependencies==cloud-eureka,cloud-gateway-reactive,cloud-resilience4j | tar -xzvf -
 ----
 
 . Open the `spring-boot-microservices` directory in IntelliJ IDEA:
 
     idea .
-
-. Run `chmod +x gradlew` in each directory to make the Gradle wrapper executable.
 
 == Add Service Discovery with Netflix Eureka
 
@@ -227,7 +225,7 @@ class CarController {
 }
 ----
 
-. There's a `compose.yml` file in the root directory to start a PostgreSQL instance.
+. There's a `compose.yaml` file in the root directory to start a PostgreSQL instance.
 +
 [source,yaml]
 ----
