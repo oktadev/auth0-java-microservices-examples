@@ -1,6 +1,6 @@
 # Java Microservices with Spring Boot and Spring Cloud
 
-This example is a bare-bones microservices architecture built with Spring Boot, Spring Cloud Gateway, WebClient, and Resilience4j.
+This example is a bare-bones microservices architecture built with Spring Boot, Spring Cloud Gateway, Feign, and Resilience4j.
 
 **Prerequisites:** [Java 17](https://sdkman.io/sdks#java) and [Docker](https://docs.docker.com/engine/install/).
 
@@ -15,7 +15,7 @@ To install this example, run the following commands:
 
 ```bash
 git clone https://github.com/oktadev/auth0-java-microservices-examples.git
-cd auth0-java-microservices-examples/spring-boot-gateway-webflux
+cd auth0-java-microservices-examples/spring-boot-gateway-mvc
 ```
 
 The `api-gateway` and `car-service` projects are already pre-configured to be locked down with OAuth 2.0 and Auth0. That means if you try to run them, you won't be able to log in until you create an account, and an application in it.
