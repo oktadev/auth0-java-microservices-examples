@@ -5,18 +5,38 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.ServerResponse;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+
+import static org.springframework.cloud.gateway.server.mvc.filter.LoadBalancerFilterFunctions.lb;
+import static org.springframework.cloud.gateway.server.mvc.filter.TokenRelayFilterFunctions.tokenRelay;
+import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
+import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
+import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.path;
 
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ApiGatewayApplication {
 
+    //@Bean
+    public RouterFunction<ServerResponse> gatewayRouterFunctionsLoadBalancer() {
+        // TODO: token relay not workinig in config
+        // @formatter:off
+        return route("car-service")
+                .route(path("/home/**"), http())
+                .filter(lb("car-service"))
+                .filter(tokenRelay())
+                .build();
+        // @formatter:on
+    }
     public static void main(String[] args) {
         SpringApplication.run(ApiGatewayApplication.class, args);
     }

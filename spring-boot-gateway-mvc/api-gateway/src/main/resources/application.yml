@@ -1,13 +1,11 @@
 spring:
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-      default-filters:
-        - TokenRelay
-      routes:
-        - id: car-service
-          uri: lb://car-service
-          predicates:
-            - Path=/home/**
+      mvc:
+        routes:
+          - id: car-service
+            uri: lb://car-service
+            predicates:
+              - Path=/home/**
+            filters:
+              - TokenRelay
