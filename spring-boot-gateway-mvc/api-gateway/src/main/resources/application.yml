@@ -1,11 +1,11 @@
-spring:
-  cloud:
-    gateway:
-      mvc:
-        routes:
-          - id: car-service
-            uri: lb://car-service
-            predicates:
-              - Path=/home/**
-            filters:
-              - TokenRelay
+#spring:
+#  cloud:
+#    gateway:
+#      mvc:
+#        routes:
+#          - id: car-service
+#            uri: lb://car-service
+#            predicates:
+#              - Path=/home/**
+#            filters:
+#              - TokenRelay
