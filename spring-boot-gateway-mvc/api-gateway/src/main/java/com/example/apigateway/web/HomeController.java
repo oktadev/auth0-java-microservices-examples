@@ -16,7 +16,6 @@ class HomeController {
         return "Hello, " + user.getFullName();
     }
 
-
     @GetMapping("/print-token")
     public String printAccessToken(@RegisteredOAuth2AuthorizedClient("okta")
                                    OAuth2AuthorizedClient authorizedClient) {

@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 @Configuration
 public class SecurityConfiguration {
 
-    @Value("${okta.oauth2.audience}")
+    @Value("${okta.oauth2.audience:}")
     private String audience;
 
     private final ClientRegistrationRepository clientRegistrationRepository;
