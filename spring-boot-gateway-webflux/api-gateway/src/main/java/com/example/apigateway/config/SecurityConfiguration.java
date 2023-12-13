@@ -41,9 +41,8 @@ public class SecurityConfiguration {
     private ServerOAuth2AuthorizationRequestResolver authorizationRequestResolver(
         ReactiveClientRegistrationRepository clientRegistrationRepository) {
 
-        DefaultServerOAuth2AuthorizationRequestResolver authorizationRequestResolver =
-            new DefaultServerOAuth2AuthorizationRequestResolver(
-                clientRegistrationRepository);
+        var authorizationRequestResolver =
+            new DefaultServerOAuth2AuthorizationRequestResolver(clientRegistrationRepository);
         authorizationRequestResolver.setAuthorizationRequestCustomizer(
             authorizationRequestCustomizer());
 
