@@ -90,12 +90,10 @@ OKTA_OAUTH2_SCOPES=openid,profile,email,offline_access
 OKTA_OAUTH2_AUDIENCE=https://fast-expiring-api
 ```
 
-Then, add a property to `application.properties` to read it:
+Then, add a property to `application.properties` to read the scopes:
 
 ```properties
 okta.oauth2.scopes=${OKTA_OAUTH2_SCOPES}
-
-logging.level.org.springframework.web.reactive.function.client=DEBUG
 ```
 
 Create an API in Auth0 called `fast-expiring-api` and set the TTL to 30 seconds.
