@@ -1,6 +1,8 @@
 # Java Microservices with Spring Boot and Spring Cloud
 
-This example is a bare-bones microservices architecture built with Spring Boot, Spring Cloud Gateway, Feign, and Resilience4j.
+This example is a bare-bones microservices architecture built with Spring Boot, Spring Cloud Gateway, OpenFeign, and OAuth 2.0.
+
+Please read [Java Microservices with Spring Boot and Spring Cloud](https://auth0.com/blog/java-spring-boot-microservices/) to learn more about this example. You can create everything yourself by following the steps in this project's [demo script](demo.adoc).
 
 **Prerequisites:** [Java 17](https://sdkman.io/sdks#java) and [Docker](https://docs.docker.com/engine/install/).
 
