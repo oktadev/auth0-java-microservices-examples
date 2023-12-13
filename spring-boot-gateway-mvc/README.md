@@ -90,8 +90,11 @@ OKTA_OAUTH2_AUDIENCE=http://fast-expiring-api
 ```
 
 Then, create an API in Auth0 called `fast-expiring-api` and set the TTL to 30 seconds.
- 
-<!-- todo: add instructions for creating an API with the Auth0 CLI -->
+
+```shell
+auth0 apis create --name fast-expiring --identifier https://fast-expiring-api \
+  --token-lifetime 30 --offline-access --no-input
+```
 
 Restart the API gateway. 
 

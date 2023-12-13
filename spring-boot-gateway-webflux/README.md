@@ -2,11 +2,12 @@
 
 This example is a bare-bones microservices architecture built with Spring Boot, Spring Cloud Gateway, WebClient, Resilience4j, and OAuth 2.0.
 
-Please read [Java Microservices with Spring Boot and Spring Cloud](https://auth0.com/blog/java-spring-boot-microservices/) to learn more about this example. You can create everything yourself by following the steps in this project's [demo script](demo.adoc).
+Please read [Java Microservices with Spring Boot and Spring Cloud](https://auth0.com/blog/java-spring-boot-microservices/) to learn more about this example.
 
 **Prerequisites:** [Java 17](https://sdkman.io/sdks#java) and [Docker](https://docs.docker.com/engine/install/).
 
 * [Getting Started](#getting-started)
+* [Learn More](#learn-more)
 * [Links](#links)
 * [Help](#help)
 * [License](#license)
@@ -91,7 +92,10 @@ OKTA_OAUTH2_AUDIENCE=http://fast-expiring-api
 
 Then, create an API in Auth0 called `fast-expiring-api` and set the TTL to 30 seconds.
  
-<!-- todo: add instructions for creating an API with the Auth0 CLI -->
+```shell
+auth0 apis create --name fast-expiring --identifier https://fast-expiring-api \
+  --token-lifetime 30 --offline-access --no-input
+```
 
 Restart the API gateway. 
 
@@ -101,6 +105,10 @@ cd api-gateway
 ```
 
 Then, go to `http://localhost:8080/print-token` to see your access token. You can copy the expired time to [timestamp-converter.com](https://www.timestamp-converter.com/) to see when it expires in your local timezone. Wait 30 seconds and refresh the page. You'll see a request to get a new token and an updated expires timestamp in your terminal.
+
+## Learn More
+
+You can create everything yourself by following the steps in this project's [demo script](demo.adoc) or in our [Build and Secure Spring Boot Microservices lab](https://developer.auth0.com/resources/labs/authorization/securing-spring-boot-microservices#introduction).
 
 ## Links
 
